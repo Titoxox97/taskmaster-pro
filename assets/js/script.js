@@ -33,7 +33,6 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -100,7 +99,7 @@ $(".list-group").on("click", "p", function() {
 // editable field was un-focused
 $(".list-group").on("blur", "textarea", function() {
   // get current value of textarea
-  var text = $(this).val();
+  var text = $(this).val().trim();
 
   // get status type and position in the list
   var status = $(this)
@@ -136,9 +135,10 @@ $(".list-group").on("click", "span", function() {
     .attr("type", "text")
     .addClass("form-control")
     .val(date);
+    // swap out elements
   $(this).replaceWith(dateInput);
 
-  // automatically bring up the calendar
+  // automatically bring up the calendar by focusing on new element
   dateInput.trigger("focus");
 });
 

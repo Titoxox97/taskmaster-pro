@@ -37,7 +37,9 @@ var auditTask = function(taskEl) {
   else if (Math.abs(moment().diff(time, "days")) <= 2) {
     $(taskEl).addClass("list-group-item-warning");
   }
+  console.log(taskEl);
 };
+
 
 var loadTasks = function() {
   tasks = JSON.parse(localStorage.getItem("tasks"));
@@ -70,19 +72,24 @@ $(".card .list-group").sortable({
   scroll: false,
   tolerance: "pointer",
   helper: "clone",
-  activate: function(event) {
-    console.log("activate", this);
+  activate: function(_event, _ui) {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
+
   },
-  deactivate: function(event) {
-    console.log("deactivate", this);
+  deactivate: function(_event, _ui) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
-  over: function(event) {
-    console.log("over", event.target);
+  over: function(_event, _ui) {
+    // $(_event.target).addClass("dropover-active");
+    $(".bottom-trash").addClass("bottom-trash-active");
   },
-  out: function(event) {
-    console.log("out", event.target);
+  out: function(_event, _ui) {
+    // $(_event.target).removeClass("dropover-active");
+    $(".bottom-trash").removeClass("bottom-trash-active");
   },
-  update: function(event) {
+  update: function(_event) {
 
     // array to store the task data in
     var tempArr = [];
@@ -123,14 +130,14 @@ saveTasks();
 $("#trash").droppable({
   accept: ".card .list-group-item",
   tolerance: "touch",
-  drop: function(event, ui) {
+  drop: function(_event, ui) {
     console.log("drop");
     ui.draggable.remove();
   },
-  over: function(event, ui) {
+  over: function(_event, _ui) {
     console.log("over");
   },
-  out: function(event, ui) {
+  out: function(_event, _ui) {
     console.log("out");
   }
 });
@@ -287,5 +294,8 @@ $("#remove-tasks").on("click", function() {
 // load tasks for the first time
 loadTasks();
 
-
-
+setInterval(function() {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000 * 60) * 30);
